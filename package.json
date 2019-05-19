@@ -1,0 +1,30 @@
+{
+  "name": "mdoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "mdoc": "./src/cli/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cac": "^6.5.1",
+    "chokidar": "^3.0.0",
+    "husky": "^2.2.0",
+    "lint-staged": "^8.1.6",
+    "lru-cache": "^5.1.1",
+    "prismjs": "^1.16.0",
+    "chalk": "^2.4.2",
+    "express": "^4.17.0",
+    "fs-extra": "^8.0.1",
+    "globby": "^9.2.0",
+    "hash-sum": "^1.0.2",
+    "markdown-it": "^8.4.2",
+    "nunjucks": "^3.2.0",
+    "socket.io": "^2.2.0"
+  }
+}

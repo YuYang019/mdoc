@@ -4,7 +4,6 @@ module.exports = {
     'plugin:vue-libs/recommended',
     'plugin:jest/recommended',
     'plugin:prettier/recommended',
-    'prettier',
   ],
   rules: {
     indent: ['error', 2, { MemberExpression: 'off' }],

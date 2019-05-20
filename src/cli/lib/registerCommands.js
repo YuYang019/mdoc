@@ -9,12 +9,10 @@ module.exports = function registerCommands(cli, options) {
     .option('--port <port>', '指定服务器端口')
     .option('--debug', '调试模式')
     .action((sourceDir = '.', options) => {
-
       wrapCommand(dev)({
         sourceDir: path.resolve(sourceDir),
         ...options
       })
-
     })
 
   cli
@@ -22,11 +20,9 @@ module.exports = function registerCommands(cli, options) {
     .option('--port <port>', '指定服务器端口')
     .option('--debug', '调试模式')
     .action((sourceDir = '.', options) => {
-      
       wrapCommand(build)({
         sourceDir: path.resolve(sourceDir),
         ...options
       })
-      
-  })
-} 
+    })
+}

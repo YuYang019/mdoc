@@ -17,7 +17,7 @@ function createTemp(ctx) {
     const destPath = path.join(tempPath, file)
     // 如果md文件存在文件夹层级。那么生成对应html的文件夹层级也应该相同
     await fs.ensureDir(path.parse(destPath).dir)
-    
+
     logger.debug('写入文件的路径：', destPath)
 
     const cached = cache.get(destPath)

@@ -1,10 +1,7 @@
 const cac = require('cac')
 const chalk = require('chalk')
 
-async function CLI({
-  beforeParse,
-  afterParse
-}) {
+async function CLI({ beforeParse, afterParse }) {
   const cli = cac()
   beforeParse && beforeParse(cli)
   cli.parse(process.argv)

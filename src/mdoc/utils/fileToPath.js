@@ -1,4 +1,4 @@
-module.exports = function fileToPath (relative) {
+module.exports = function fileToPath(relative) {
   // README.md -> index.html
   // foo/README.md -> /foo/index.html
   // foo.md -> /foo.html

@@ -1,4 +1,4 @@
-module.exports = (md) => {
+module.exports = md => {
   md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     const token = tokens[idx]
     const hrefIndex = token.attrIndex('href')
@@ -11,8 +11,8 @@ module.exports = (md) => {
         // xxx.md -> xxx.html
         // README.html -> index.html
         const newHref = href
-            .replace(/\.md$/, '.html')
-            .replace(/README\.html$/, 'index.html')
+          .replace(/\.md$/, '.html')
+          .replace(/README\.html$/, 'index.html')
         link[1] = newHref
       }
     }

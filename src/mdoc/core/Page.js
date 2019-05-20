@@ -4,11 +4,7 @@ const renderHtml = require('./renderHtml')
 const fileToPath = require('../utils/fileToPath')
 
 class Page {
-  constructor({
-    content,
-    filePath,
-    relative,
-  }, ctx) {
+  constructor({ content, filePath, relative }, ctx) {
     this._filePath = filePath
     this._content = content
     this._context = ctx
@@ -18,9 +14,7 @@ class Page {
     this.path = encodeURI(fileToPath(this._relative))
   }
 
-  async process({
-    markdown
-  }) {
+  async process({ markdown }) {
     if (this._filePath) {
       this._content = await fs.readFile(this._filePath, 'utf-8')
     }

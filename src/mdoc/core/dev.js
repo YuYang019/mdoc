@@ -14,17 +14,19 @@ class DevProcess extends EventEmiiter {
   }
 
   watchSourceFile() {
-    this.pagesWatcher = chokidar.watch([
-      '**/*.md'
-    ], {
+    this.pagesWatcher = chokidar.watch(['**/*.md'], {
       cwd: this.context.sourceDir,
       ignored: ['node_modules'],
       ignoreInitial: true
     })
 
-    this.pagesWatcher.on('change', target => this.handleUpdate('change', target))
+    this.pagesWatcher.on('change', target =>
+      this.handleUpdate('change', target)
+    )
     this.pagesWatcher.on('add', target => this.handleUpdate('add', target))
-    this.pagesWatcher.on('unlink', target => this.handleUpdate('unlink', target))
+    this.pagesWatcher.on('unlink', target =>
+      this.handleUpdate('unlink', target)
+    )
     // this.pagesWatcher.on('addDir', target => this.handleUpdate('addDir', target))
     // this.pagesWatcher.on('unlinkDir', target => this.handleUpdate('unlinkDir', target))
   }

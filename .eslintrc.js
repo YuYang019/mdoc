@@ -6,8 +6,8 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
-    indent: ['error', 2, { MemberExpression: 'off' }],
-    'no-undef': ['error'],
-    'operator-linebreak': ['error', 'before']
+    // indent: ['error', 2, { MemberExpression: 'off' }],
+    // 'no-undef': ['error'],
+    // 'operator-linebreak': ['error', 'before']
   }
 }

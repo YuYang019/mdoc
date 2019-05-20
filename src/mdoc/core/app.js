@@ -3,7 +3,7 @@ const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs-extra')
 
-const BuildProcess = require('./build')
+// const BuildProcess = require('./build')
 const DevProcess = require('./dev')
 const createTemp = require('./createTemp')
 const createMarkdown = require('./createMarkdown')
@@ -43,7 +43,7 @@ class App {
 
   async handleFileChange({ type, target }) {
     switch (type) {
-      case 'change': 
+      case 'change':
       case 'add':
         // 获取变动的md文件路径
         const filePath = path.join(this.sourceDir, target)
@@ -59,7 +59,8 @@ class App {
         // 删除
         await fs.remove(distHtmlPath)
         break
-      default: return
+      default:
+        return
     }
   }
 
@@ -68,12 +69,14 @@ class App {
 
     const pageFile = await globby(patterns, { cwd: this.sourceDir })
     logger.debug('pageFile', pageFile)
-    
+
     // all并行解析添加
-    await Promise.all(pageFile.map(async (relative) => {
-      const filePath = path.resolve(this.sourceDir, relative)
-      await this.addPage({ filePath, relative })
-    }))
+    await Promise.all(
+      pageFile.map(async relative => {
+        const filePath = path.resolve(this.sourceDir, relative)
+        await this.addPage({ filePath, relative })
+      })
+    )
   }
 
   async addPage(options) {
@@ -94,12 +97,16 @@ class App {
     this.isProd = false
     this.devProcess = new DevProcess(this)
     await this.devProcess.process()
-    
+
     try {
       this.devProcess
         .createServer(this)
         .on('fileChanged', ({ type, target }) => {
-          console.log(`Reload due to ${chalk.red(type)} ${chalk.cyan(path.relative(this.sourceDir, target))}`)
+          console.log(
+            `Reload due to ${chalk.red(type)} ${chalk.cyan(
+              path.relative(this.sourceDir, target)
+            )}`
+          )
           this.handleFileChange({ type, target })
         })
     } catch (err) {
@@ -109,9 +116,7 @@ class App {
     return this
   }
 
-  build() {
-
-  }
+  build() {}
 }
 
 module.exports = App

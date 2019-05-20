@@ -4,7 +4,7 @@ const path = require('path')
 const SocketIo = require('socket.io')
 const Http = require('http')
 
-module.exports = function createDevServer (ctx) {
+module.exports = function createDevServer(ctx) {
   const app = express()
   const http = Http.Server(app)
   const io = SocketIo(http)
@@ -23,4 +23,3 @@ module.exports = function createDevServer (ctx) {
 
   return io
 }
-

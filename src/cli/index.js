@@ -15,5 +15,5 @@ CLI({
     const pkg = require('../../package.json')
     registerCommands(cli)
     cli.version(pkg.version).help()
-  },
+  }
 })

@@ -8,6 +8,8 @@ tag: 1
 
 - 我很好, 不a阿斯达你是不是说啥啊盛大的期望看到就不去玩
 
+- [demo](./README.md)
+
 ``` js
   const a = 1
   const b = 2

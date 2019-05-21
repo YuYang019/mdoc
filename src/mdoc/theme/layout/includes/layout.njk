@@ -1,0 +1,22 @@
+{% include "./header.njk" %}
+
+<body>
+  <div id="container">
+    {{ content }}
+  </div>
+
+  {% include "./footer.njk" %}
+
+  {% if isDev %}
+    <!-- dev mode -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      socket.on('refresh', () => {
+        window.location.reload(true)
+      })
+    </script>
+  {% endif %}
+
+</body>
+</html>

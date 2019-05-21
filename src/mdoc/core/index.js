@@ -1,4 +1,4 @@
-const App = require('./app')
+const App = require('./App')
 
 function createApp(options) {
   return new App(options)

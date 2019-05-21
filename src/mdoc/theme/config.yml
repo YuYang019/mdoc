@@ -1,0 +1,5 @@
+stylesheets:
+  - /source/css/index.css
+
+scripts:
+  - /source/js/index.js

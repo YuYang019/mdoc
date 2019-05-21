@@ -5,6 +5,7 @@ const fs = require('fs-extra')
 
 // const BuildProcess = require('./build')
 const DevProcess = require('./dev')
+const GenerateProcess = require('./generate')
 const createTemp = require('./createTemp')
 const createMarkdown = require('./createMarkdown')
 const logger = require('../utils/logger')
@@ -39,6 +40,8 @@ class App {
     this.theme = await loadTheme(this)
 
     await this.resolvePage()
+
+    await this.generate()
   }
 
   async handleFileChange({ type, target }) {
@@ -79,6 +82,11 @@ class App {
     )
   }
 
+  async generate() {
+    this.generateProcess = new GenerateProcess(this)
+    await this.generateProcess.generate()
+  }
+
   async addPage(options) {
     const page = new Page(options, this)
     await page.process({
@@ -116,7 +124,9 @@ class App {
     return this
   }
 
-  build() {}
+  build() {
+    this.isProd = true
+  }
 }
 
 module.exports = App

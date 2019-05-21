@@ -1,5 +1,5 @@
 const express = require('express')
-const logger = require('../../utils/logger')
+const logger = require('../../../utils/logger')
 const path = require('path')
 const SocketIo = require('socket.io')
 const Http = require('http')
@@ -10,7 +10,7 @@ module.exports = function createDevServer(ctx) {
   const io = SocketIo(http)
 
   const staticPath = path.relative(process.cwd(), ctx.tempPath)
-  logger.debug('命令运行目录到静态资源的相对路径为：', staticPath)
+  logger.debug('命令运行目录到静态html资源的相对路径为：', staticPath)
 
   // express解析static目录，是通过path.resolve(root)解析
   // 而path.resolve()只有一个参数的时候，相当于path.resolve(process.cwd(), root)

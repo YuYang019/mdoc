@@ -1,0 +1,11 @@
+{% macro css(stylesheets) %}
+  {% for href in stylesheets %}
+    <link rel="stylesheet" href={{ href }}>
+  {% endfor %}
+{% endmacro %}
+
+{% macro js(scripts) %}
+  {% for js in scripts %}
+    <scripts src={{ js }}></scripts>
+  {% endfor %}
+{% endmacro %}

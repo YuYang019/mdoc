@@ -1,6 +1,6 @@
 const EventEmiiter = require('events').EventEmitter
 const chokidar = require('chokidar')
-const logger = require('../utils/logger')
+const logger = require('../../utils/logger')
 const createDevServer = require('./devServer/createDevServer')
 
 class DevProcess extends EventEmiiter {

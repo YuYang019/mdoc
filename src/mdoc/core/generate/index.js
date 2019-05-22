@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
-const { renderPage } = require('./renderHtml')
+const { renderPage, renderIndex } = require('./renderHtml')
+const injectDevcode = require('./injectDevcode')
 const logger = require('../../utils/logger')
 
 module.exports = class GenerateProcess {
@@ -9,23 +10,39 @@ module.exports = class GenerateProcess {
   }
 
   async generate() {
-    await this.generatePage()
+    await this.generatePages()
     await this.generateStaticSource()
   }
 
-  async generatePage() {
+  async generatePages() {
     const pages = this.context.pages
-    const writeTemp = this.context.writeTemp
 
     // 并行
     await Promise.all(
       pages.map(async page => {
-        const pageHtml = page.html
-        const pagePath = page.path
-        const html = renderPage(pageHtml, this.context)
-        await writeTemp(pagePath, html)
+        await this.generatePage(page)
       })
     )
+  }
+
+  async generatePage(page) {
+    const writeTemp = this.context.writeTemp
+    const pageHtml = page.html
+    const pagePath = page.path
+    const frontmatter = page.frontmatter
+    let html
+
+    if (frontmatter.home) {
+      html = renderIndex(pageHtml, this.context)
+    } else {
+      html = renderPage(pageHtml, this.context)
+    }
+
+    if (!this.context.isProd) {
+      html = injectDevcode(html)
+    }
+
+    await writeTemp(pagePath, html)
   }
 
   async generateStaticSource() {

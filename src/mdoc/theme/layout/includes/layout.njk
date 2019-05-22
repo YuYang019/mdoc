@@ -5,18 +5,5 @@
     {{ content }}
   </div>
 
-  {% include "./footer.njk" %}
+{% include "./footer.njk" %}
 
-  {% if isDev %}
-    <!-- dev mode -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-      socket.on('refresh', () => {
-        window.location.reload(true)
-      })
-    </script>
-  {% endif %}
-
-</body>
-</html>

@@ -1,3 +1,8 @@
+---
+home: true
+---
+
 # 首页
 
-[home](/home)
+[home](./home.md)
+[nav](./nav/nav.md)

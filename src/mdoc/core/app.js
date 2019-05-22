@@ -44,26 +44,33 @@ class App {
     await this.generate()
   }
 
-  async handleFileChange({ type, target }) {
-    switch (type) {
-      case 'change':
-      case 'add':
-        // 获取变动的md文件路径
-        const filePath = path.join(this.sourceDir, target)
-        logger.debug('文件被修改或添加', filePath, 'target: ', target)
-        // 重新生成
-        await this.addPage({ filePath, relative: target })
-        this.devProcess.refresh()
-        break
-      case 'unlink':
-        // 获取已生成的html文件
-        const distHtmlPath = path.join(this.tempPath, fileToPath(target))
-        logger.debug('文件被删除', distHtmlPath, 'target: ', target)
-        // 删除
-        await fs.remove(distHtmlPath)
-        break
-      default:
-        return
+  async handleFileChange({ type, target, from }) {
+    if (from === 'source') {
+      switch (type) {
+        case 'change':
+        case 'add':
+          // 获取变动的md文件路径
+          const filePath = path.join(this.sourceDir, target)
+          logger.debug('文件被修改或添加', filePath, 'target: ', target)
+          // 重新生成
+          const newPage = await this.addPage({ filePath, relative: target })
+          await this.generateProcess.generatePage(newPage)
+          // 刷新
+          this.devProcess.refresh()
+          break
+        case 'unlink':
+          // 获取已生成的html文件
+          const distHtmlPath = path.join(this.tempPath, fileToPath(target))
+          logger.debug('文件被删除', distHtmlPath, 'target: ', target)
+          // 删除
+          await fs.remove(distHtmlPath)
+          break
+        default:
+          return
+      }
+    } else if (from === 'theme') {
+      await this.process()
+      this.devProcess.refresh()
     }
   }
 
@@ -99,6 +106,8 @@ class App {
     } else {
       this.pages.push(page)
     }
+
+    return page
   }
 
   async dev() {
@@ -109,13 +118,13 @@ class App {
     try {
       this.devProcess
         .createServer(this)
-        .on('fileChanged', ({ type, target }) => {
-          console.log(
+        .on('fileChanged', ({ type, target, from }) => {
+          logger.tip(
             `Reload due to ${chalk.red(type)} ${chalk.cyan(
               path.relative(this.sourceDir, target)
             )}`
           )
-          this.handleFileChange({ type, target })
+          this.handleFileChange({ type, target, from })
         })
     } catch (err) {
       throw err

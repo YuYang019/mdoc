@@ -9,3 +9,7 @@
   - 支持theme config, 格式为yml
   - 支持theme模板引入静态资源，静态资源文件夹默认为source
   - theme模板自动注入辅助函数 (nunjunks里叫macro)
+- 5.22
+  - md文件支持front matter配置（gray-matter）
+  - 模板自动注入开发模式所需js代码，无需手动添加。（解析html添加scripts）
+  - 开发模式，新增监听主题文件变化，方便主题开发

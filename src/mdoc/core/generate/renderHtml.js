@@ -15,6 +15,7 @@ function renderIndex() {
       logger.debug('缓存nunjuck env')
       // 设置主题模板所在路径
       env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
+      env = injectTemplateHelper(env)
     }
 
     return env.renderString(indexTemplate, {
@@ -38,6 +39,7 @@ function renderPage() {
     if (!env) {
       logger.debug('缓存nunjuck env')
       env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
+      env = injectTemplateHelper(env)
     }
 
     logger.debug('theme config: ', themeConfig)
@@ -48,6 +50,38 @@ function renderPage() {
       theme: themeConfig
     })
   }
+}
+
+function injectTemplateHelper(env) {
+  env.addGlobal('css', stylesheets => {
+    let result = ''
+    if (Array.isArray(stylesheets)) {
+      stylesheets.forEach(stylesheet => {
+        result += `<link rel="stylesheet" href=${stylesheet}></link>`
+      })
+    } else if (typeof stylesheets === 'string') {
+      result = `<link rel="stylesheet" href=${stylesheets}></link>`
+    } else {
+      result = ''
+    }
+    return result
+  })
+
+  env.addGlobal('js', scripts => {
+    let result = ''
+    if (Array.isArray(scripts)) {
+      scripts.forEach(script => {
+        result += `<script src=${script}></script>`
+      })
+    } else if (typeof scripts === 'string') {
+      result = `<script src=${scripts}></link>`
+    } else {
+      result = ''
+    }
+    return result
+  })
+
+  return env
 }
 
 module.exports = { renderPage: renderPage(), renderIndex: renderIndex() }

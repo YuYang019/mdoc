@@ -10,4 +10,8 @@
     {{ css(theme.stylesheets) }}
   {% endif %}
 
+  {% if theme.highlight %}
+    {{ css("/static/css/prism-tomorrow.css") }}
+  {% endif %}
+
 </head>

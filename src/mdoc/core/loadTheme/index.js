@@ -21,21 +21,13 @@ async function loadTheme() {
   return {
     themePath,
     layoutPath,
-    indexTemplate: addTemplateHelper(indexTemplate),
-    pageTemplate: addTemplateHelper(pageTemplate),
+    indexTemplate,
+    pageTemplate,
     sourcePath,
     indexPath,
     pagePath,
     themeConfig
   }
-}
-
-// 注入模板辅助函数
-function addTemplateHelper(template) {
-  const helperPath = path.resolve(__dirname, './templateHelper/helper.njk')
-  const helper = fs.readFileSync(helperPath, 'utf-8')
-
-  return helper + '\n' + template
 }
 
 function loadThemeConfig() {

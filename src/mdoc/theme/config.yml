@@ -1,5 +1,16 @@
+social:
+  github: https://github.com/maoyuyang
+
+author: emmm
+
+avatar: https://avatars0.githubusercontent.com/u/19368146?s=460&v=4
+
+signature: 无可救药之人
+
 stylesheets:
-  - /source/css/index.css
+  - /static/css/index.css
+  - /static/css/normalize.css
+  - /static/icon/iconfont.css
 
 scripts:
-  - /source/js/index.js
+  - /static/js/index.js

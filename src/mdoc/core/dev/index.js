@@ -1,6 +1,7 @@
 const EventEmiiter = require('events').EventEmitter
 const chokidar = require('chokidar')
 const logger = require('../../utils/logger')
+const CHANGE_FROM = require('./constants')
 const createDevServer = require('./devServer/createDevServer')
 
 class DevProcess extends EventEmiiter {
@@ -10,8 +11,8 @@ class DevProcess extends EventEmiiter {
   }
 
   async process() {
-    this.watchSourceFile()
-    this.watchThemeFile()
+    this.watchSourceFiles()
+    this.watchThemeFiles()
   }
 
   watchSourceFiles() {
@@ -22,26 +23,25 @@ class DevProcess extends EventEmiiter {
     })
 
     this.pagesWatcher.on('change', target =>
-      this.handleUpdate('change', target, 'source')
+      this.handleUpdate('change', target, CHANGE_FROM.SOURCE)
     )
     this.pagesWatcher.on('add', target =>
-      this.handleUpdate('add', target, 'source')
+      this.handleUpdate('add', target, CHANGE_FROM.SOURCE)
     )
     this.pagesWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, 'source')
+      this.handleUpdate('unlink', target, CHANGE_FROM.SOURCE)
     )
     // this.pagesWatcher.on('addDir', target => this.handleUpdate('addDir', target))
     // this.pagesWatcher.on('unlinkDir', target => this.handleUpdate('unlinkDir', target))
   }
 
-  // todo 优化，对于静态资源不需要重新构建，涉及到模板的才需要
   watchThemeFiles() {
     const {
       theme: { themePath }
     } = this.context
 
-    this.themeWatcher = chokidar.watch(
-      ['source/**/*.js', 'source/**/*.css', 'config.yml', 'layout/**/*.njk'],
+    this.themeStaticFilesWatcher = chokidar.watch(
+      ['static/**/*.js', 'static/**/*.css'],
       {
         cwd: themePath,
         ignored: ['node_modules'],
@@ -49,16 +49,32 @@ class DevProcess extends EventEmiiter {
       }
     )
 
+    this.themeWatcher = chokidar.watch(['config.yml', 'layout/**/*.njk'], {
+      cwd: themePath,
+      ignored: ['node_modules'],
+      ignoreInitial: true
+    })
+
     logger.debug('watchThemeFiles')
 
+    this.themeStaticFilesWatcher.on('change', target =>
+      this.handleUpdate('change', target, CHANGE_FROM.THEME_STATIC)
+    )
+    this.themeStaticFilesWatcher.on('add', target =>
+      this.handleUpdate('add', target, CHANGE_FROM.THEME_STATIC)
+    )
+    this.themeStaticFilesWatcher.on('unlink', target =>
+      this.handleUpdate('unlink', target, CHANGE_FROM.THEME_STATIC)
+    )
+
     this.themeWatcher.on('change', target =>
-      this.handleUpdate('change', target, 'theme')
+      this.handleUpdate('change', target, CHANGE_FROM.THEME)
     )
     this.themeWatcher.on('add', target =>
-      this.handleUpdate('add', target, 'theme')
+      this.handleUpdate('add', target, CHANGE_FROM.THEME)
     )
     this.themeWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, 'theme')
+      this.handleUpdate('unlink', target, CHANGE_FROM.THEME)
     )
   }
 

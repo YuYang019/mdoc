@@ -51,7 +51,7 @@ module.exports = class GenerateProcess {
       tempPath
     } = this.context
 
-    await fs.copy(sourcePath, path.join(tempPath, 'source'))
+    await fs.copy(sourcePath, path.join(tempPath, 'static'))
 
     logger.debug('拷贝静态文件到temp目录')
   }

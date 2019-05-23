@@ -11,6 +11,7 @@ const createMarkdown = require('./createMarkdown')
 const logger = require('../utils/logger')
 const loadTheme = require('./loadTheme')
 const fileToPath = require('../utils/fileToPath')
+const CHANGE_FROM = require('./dev/constants')
 
 const Page = require('./Page')
 
@@ -45,7 +46,7 @@ class App {
   }
 
   async handleFileChange({ type, target, from }) {
-    if (from === 'source') {
+    if (from === CHANGE_FROM.SOURCE) {
       switch (type) {
         case 'change':
         case 'add':
@@ -68,8 +69,13 @@ class App {
         default:
           return
       }
-    } else if (from === 'theme') {
+    } else if (from === CHANGE_FROM.THEME) {
+      // 重新编译
       await this.process()
+      this.devProcess.refresh()
+    } else if (from === CHANGE_FROM.THEME_STATIC) {
+      // 更新静态文件到temp目录
+      await this.generateProcess.generateStaticSource()
       this.devProcess.refresh()
     }
   }

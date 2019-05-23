@@ -14,7 +14,7 @@ function renderIndex() {
     if (!env) {
       logger.debug('缓存nunjuck env')
       // 设置主题模板所在路径
-      env = nunjucks.configure(layoutPath, { autoescape: false })
+      env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
     }
 
     return env.renderString(indexTemplate, {
@@ -37,7 +37,7 @@ function renderPage() {
 
     if (!env) {
       logger.debug('缓存nunjuck env')
-      env = nunjucks.configure(layoutPath, { autoescape: false })
+      env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
     }
 
     logger.debug('theme config: ', themeConfig)

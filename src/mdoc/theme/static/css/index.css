@@ -1,0 +1,177 @@
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+#container, body, html {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* 取消浏览器滚动回弹的效果, 全部绝对定位 */
+#container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+::-webkit-scrollbar { 
+  width: 8px; 
+  background-color: transparent; 
+} 
+
+::-webkit-scrollbar-thumb { 
+  border-radius: 12px; 
+  background-color: rgba(0, 0, 0, 0.2); 
+  max-height: 50px; 
+}
+
+::-webkit-scrollbar-track {
+  background-color: #eaeaea
+}
+
+#container #left {
+  width: 300px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #fff;
+  z-index: 999;
+}
+
+#container #left .overlay {
+  height: 180px;
+  width: 100%;
+  background: #4d4d4d;
+}
+
+#container #left .intro {
+  width: 76%;
+  text-align: center;
+  margin: -64px auto 0;
+}
+
+#container #left .intro .avatar {
+  margin: 0 auto;
+  display: block;
+  width: 128px;
+  height: 128px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+#container #left .intro .avatar img {
+  max-width: 100%;
+}
+
+#container #left .intro .name {
+  margin: 32px 0;
+}
+
+#container #left .intro .name a {
+  font-family: Roboto,serif;
+  font-size: 30px;
+  text-decoration: none;
+  color: #696969;
+  transition: all .3s ease;
+}
+
+#container #left .intro .name a:hover {
+  opacity: .6;
+}
+
+#container #left .intro .signature {
+  font-size: 14px;
+  line-height: 25px;
+  color: #999;
+}
+
+#container #left .intro .menu ul {
+  padding: 0;
+  margin: 45px 0;
+}
+
+#container #left .intro .menu ul li {
+  font-size: 14px;
+  list-style: none;
+  margin: 15px 0;
+}
+
+#container #left .intro .menu ul li a {
+  text-decoration: none;
+  color: #696969;
+  transition: all .3s ease;
+}
+
+#container #left .intro .menu ul li a:hover {
+  opacity: .6;
+}
+
+#container #left .intro .sub-menu {
+  margin-bottom: 30px;
+}
+
+#container #left .intro .sub-menu a {
+  font-size: 12px;
+  color: #696969;
+  transition: all .3s ease;
+}
+
+#container #left .intro .sub-menu a:hover {
+  opacity: .6;
+}
+
+#container #left .intro .social .github {
+  color: #AFB6CA;
+  transition: all .3s ease;
+  cursor: pointer;
+}
+
+#container #left .intro .social .github:hover {
+  color: #696969;
+}
+
+#container #left .intro .social .anticon{
+  font-size: 26px;
+}
+
+#container #right {
+  position: absolute;
+  left: 300px;
+  top: 0;
+  right: 0;
+  width: auto;
+  min-height: 100%;
+  background: #eaeaea;
+  padding: 30px;
+}
+
+#container #right #wrapper {
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 80px
+}
+
+#container #right #wrapper #content {
+  padding: 25px;
+}
+
+#container #right #footer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: 30px;
+  font-family: Menlo,Monaco,Andale Mono,lucida console,Courier New,monospace;
+  text-shadow: 0 1px #fff;
+  font-size: 12px;
+  opacity: .6;
+  text-align: center;
+}

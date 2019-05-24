@@ -1,5 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
+const chalk = require('chalk')
+const globby = require('globby')
 const { renderPage, renderIndex } = require('./renderHtml')
 const injectDevcode = require('./injectDevcode')
 const logger = require('../../utils/logger')
@@ -11,7 +13,8 @@ module.exports = class GenerateProcess {
 
   async generate() {
     await this.generatePages()
-    await this.generateStaticSource()
+    await this.generateSourceAssets()
+    await this.generateThemeAssets()
   }
 
   async generatePages() {
@@ -28,7 +31,7 @@ module.exports = class GenerateProcess {
   async generatePage(page) {
     const writeTemp = this.context.writeTemp
     const pageHtml = page.html
-    const pagePath = page.path
+    const pageRelativePath = page.path
     const frontmatter = page.frontmatter
     let html
 
@@ -42,17 +45,59 @@ module.exports = class GenerateProcess {
       html = injectDevcode(html)
     }
 
-    await writeTemp(pagePath, html)
+    await writeTemp(pageRelativePath, html)
   }
 
-  async generateStaticSource() {
+  async generateSourceAssets() {
+    const { tempPath, sourceDir } = this.context
+
+    // 防止source里的文件夹和theme的static文件夹重名
+    // theme的static名称是约定好的，而source里文件夹除了_posts，其余没有固定，所以可能会冲突
+    const staticPath = path.resolve(sourceDir, 'static')
+    if (fs.pathExistsSync(staticPath)) {
+      logger.error(
+        '[mdoc]:',
+        `source目录下的 ${chalk.red('static')} 文件夹名称与主题文件夹冲突`,
+        `或许您可以重命名为 ${chalk.cyan('assets')} ?`
+      )
+      throw new Error()
+    }
+
+    // 匹配不以_开头的文件
+    const patterns = ['**/!(_)*.*']
+    // 防止拷贝带下划线的文件夹，仅考虑第一层
+    const dirs = await fs.readdir(sourceDir)
+    for (let i = 0; i < dirs.length; i++) {
+      if (/^_\w+/.test(dirs[i])) {
+        patterns.push('!' + dirs[i])
+      }
+    }
+
+    const assets = await globby(patterns, {
+      cwd: sourceDir
+    })
+
+    logger.debug(tempPath, assets)
+
+    await Promise.all(
+      assets.map(async file => {
+        await fs.copy(
+          path.resolve(sourceDir, file),
+          path.resolve(tempPath, file)
+        )
+      })
+    )
+  }
+
+  async generateThemeAssets() {
     const {
       theme: { sourcePath },
       tempPath
     } = this.context
 
+    // 拷贝时包含父文件夹, 静态资源默认放static
     await fs.copy(sourcePath, path.join(tempPath, 'static'))
 
-    logger.debug('拷贝静态文件到temp目录')
+    logger.debug('拷贝主题静态文件到temp目录')
   }
 }

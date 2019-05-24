@@ -4,7 +4,7 @@ const LRU = require('lru-cache')
 const logger = require('../utils/logger')
 
 function createTemp(ctx) {
-  const tempPath = path.join(ctx.mdocDir, '.temp')
+  const tempPath = path.join(ctx.docDir, '.temp')
   const cache = new LRU()
 
   if (!fs.existsSync(tempPath)) {

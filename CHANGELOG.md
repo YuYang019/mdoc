@@ -17,3 +17,6 @@
   - 美化默认主题，模仿 hexo theme [yilia](https://github.com/litten/hexo-theme-yilia)
   - 实现代码高亮`prismjs`
   - 更改了theme模板注入辅助函数的方式，不使用`macro`而是使用`addGlobal`的api
+- 5.24
+  - 更改了docs的目录结构，和hexo尽量一致。原因是本项目主要是生成静态博客的，所以hexo的设计感觉比较适合
+  - docs目录，除了_posts, 会忽略其他`_`开头的文件

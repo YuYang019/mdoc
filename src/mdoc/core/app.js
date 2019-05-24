@@ -18,16 +18,19 @@ const Page = require('./Page')
 class App {
   constructor(options = {}) {
     this.options = options
-    this.sourceDir = this.options.sourceDir
+    this.docDir = this.options.docDir
     logger.debug('options: ', this.options)
-    logger.debug('文档源文件所在目录', this.sourceDir)
+    logger.debug('文档源文件所在目录', this.docDir)
 
     this.pages = []
-    this.outDir = path.resolve('./dist')
+    this.outDir = path.resolve(this.docDir, './dist')
     logger.debug('构建产物所在目录', this.outDir)
 
-    this.mdocDir = path.resolve(this.sourceDir, '.mdoc')
-    logger.debug('mdoc文件夹路径', this.mdocDir)
+    this.pageDir = path.resolve(this.docDir, './source/_posts')
+    logger.debug('md文件夹所在目录', this.pageDir)
+
+    this.sourceDir = path.resolve(this.docDir, './source')
+    logger.debug('source文件夹所在目录', this.pageDir)
 
     const { tempPath, writeTemp } = createTemp(this)
     this.tempPath = tempPath
@@ -70,26 +73,28 @@ class App {
           return
       }
     } else if (from === CHANGE_FROM.THEME) {
-      // 重新编译
+      // 主题模板改变时，重新编译
       await this.process()
       this.devProcess.refresh()
     } else if (from === CHANGE_FROM.THEME_STATIC) {
-      // 更新静态文件到temp目录
-      await this.generateProcess.generateStaticSource()
+      // 主题静态资源改变时，更新静态文件到temp目录
+      await this.generateProcess.generateThemeAssets()
       this.devProcess.refresh()
     }
   }
 
   async resolvePage() {
-    const patterns = ['**/*.md', '!node_modules']
+    const patterns = ['**/!(_)*.md', '!node_modules']
 
-    const pageFile = await globby(patterns, { cwd: this.sourceDir })
+    const pageFile = await globby(patterns, {
+      cwd: this.pageDir
+    })
     logger.debug('pageFile', pageFile)
 
     // all并行解析添加
     await Promise.all(
       pageFile.map(async relative => {
-        const filePath = path.resolve(this.sourceDir, relative)
+        const filePath = path.resolve(this.pageDir, relative)
         await this.addPage({ filePath, relative })
       })
     )
@@ -127,7 +132,7 @@ class App {
         .on('fileChanged', ({ type, target, from }) => {
           logger.tip(
             `Reload due to ${chalk.red(type)} ${chalk.cyan(
-              path.relative(this.sourceDir, target)
+              path.relative(this.docDir, target)
             )}`
           )
           this.handleFileChange({ type, target, from })

@@ -169,6 +169,11 @@ a {
   padding: 25px;
 }
 
+
+#container #right #wrapper #content .article h1:first-child {
+  margin-top: 0;
+}
+
 #container #right #footer {
   position: absolute;
   left: 0;

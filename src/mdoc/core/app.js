@@ -35,17 +35,17 @@ class App {
     this.removeTemp = removeTemp
     logger.debug('tempPath:', this.tempPath)
 
+    this.appPath = path.resolve(__dirname, '../../../')
+
+    this.generateProcess = new GenerateProcess(this)
+
     this.markdown = createMarkdown(this)
   }
 
   async process() {
-    this._startTime = new Date().getTime()
-
     this.theme = await loadTheme(this)
 
     await this.resolvePage()
-
-    await this.generate()
   }
 
   async resolvePage() {
@@ -66,7 +66,6 @@ class App {
   }
 
   async generate() {
-    this.generateProcess = new GenerateProcess(this)
     await this.generateProcess.generate()
   }
 
@@ -90,6 +89,7 @@ class App {
     this.isProd = false
     this.devProcess = new DevProcess(this)
     await this.devProcess.process()
+    await this.generate()
 
     try {
       this.devProcess

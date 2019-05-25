@@ -9,7 +9,9 @@ module.exports = class BuildProcess {
   }
 
   async process() {
-    const begin = this.context._startTime
+    const begin = new Date().getTime()
+    logger.wait('构建中...，请稍后')
+    await this.context.generateProcess.generate()
     await this.context.generateProcess.generateDist()
     await this.runGulp()
     await this.context.removeTemp()
@@ -20,7 +22,10 @@ module.exports = class BuildProcess {
   async runGulp() {
     const gulpFilePath = await generateGulpFile(this.context)
     return new Promise(resolve => {
-      const child = spawn('npm', ['run', 'build', gulpFilePath])
+      console.log(this.context.appPath)
+      const child = spawn('npm', ['run', 'gulp:build', gulpFilePath], {
+        cwd: this.context.appPath
+      })
 
       // 显示子进程输出的信息
       child.stdout.setEncoding('utf-8')

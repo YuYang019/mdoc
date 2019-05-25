@@ -5,9 +5,13 @@ author: emmm
 
 highlight: true
 
-avatar: https://avatars0.githubusercontent.com/u/19368146?s=460&v=4
+powerd:
+  name: mdoc
+  github: https://github.com/maoyuyang/mdoc
 
-signature: 无可救药之人
+avatar: /static/img/avatar.jpeg
+
+signature: 知易行难啊
 
 stylesheets:
   - /static/css/index.css

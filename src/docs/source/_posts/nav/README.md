@@ -1,3 +1,0 @@
-# index
-
-[path](./nav)

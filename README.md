@@ -24,3 +24,8 @@ inspired from Vuepress/Hexo
 - 插件系统
 - 主题系统
 - 更加可配置
+
+## 备忘
+
+- source文件夹copy策略：_post文件夹下的直接复制到temp, 不包含_post文件夹本身。其余文件原样复制，包含文件夹本身。忽略其余下划线开头的文件
+- theme目录，规定静态资源文件夹为static, static会被原样复制到temp, 包含本身

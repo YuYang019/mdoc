@@ -48,6 +48,7 @@ module.exports = class GenerateProcess {
     }
 
     if (!this.context.isProd) {
+      logger.debug('inject dev code')
       html = injectDevcode(html)
     }
 
@@ -70,7 +71,7 @@ module.exports = class GenerateProcess {
     }
 
     // 匹配不以_开头的文件
-    const patterns = ['**/!(_)*.*']
+    const patterns = ['**/!(_)*.*', '!.DS_Store']
     // 防止拷贝带下划线的文件夹，仅考虑第一层
     const dirs = await fs.readdir(sourceDir)
     const copiedDirs = []
@@ -102,7 +103,7 @@ module.exports = class GenerateProcess {
       const existsPath = path.resolve(tempPath, dir)
       if (fs.existsSync(existsPath)) {
         logger.debug(`清空temp目录下的 ${chalk.red(dir)} 文件夹`)
-        fs.emptyDirSync(existsPath)
+        fs.removeSync(existsPath)
       }
     })
 

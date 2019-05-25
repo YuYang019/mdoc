@@ -19,39 +19,22 @@ class DevProcess extends EventEmiiter {
   }
 
   watchSourceFiles() {
+    // 为什么这里cwd不用sourceDir, 原因是对于md文件，复制时是不包含_posts文件夹的
+    // 如果cwd是sourceDir, 那么生成的target路径会包含_posts, 不方便后续的复制操作
     this.pagesWatcher = chokidar.watch(['**/!(_)*.md'], {
-      cwd: this.context.sourceDir,
+      cwd: this.context.pageDir,
       ignored: ['node_modules'],
       ignoreInitial: true
     })
 
     this.staticFilesWatcher = chokidar.watch(['**/!(_)*.*'], {
       cwd: this.context.sourceDir,
-      ignored: ['node_modules'],
+      ignored: ['node_modules', '_posts', '.DS_Store'],
       ignoreInitial: true
     })
 
-    this.pagesWatcher.on('change', target =>
-      this.handleUpdate('change', target, CHANGE_FROM.SOURCE)
-    )
-    this.pagesWatcher.on('add', target =>
-      this.handleUpdate('add', target, CHANGE_FROM.SOURCE)
-    )
-    this.pagesWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, CHANGE_FROM.SOURCE)
-    )
-
-    this.staticFilesWatcher.on('change', target =>
-      this.handleUpdate('change', target, CHANGE_FROM.SOURCE_STATIC)
-    )
-    this.staticFilesWatcher.on('add', target =>
-      this.handleUpdate('add', target, CHANGE_FROM.SOURCE_STATIC)
-    )
-    this.staticFilesWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, CHANGE_FROM.SOURCE_STATIC)
-    )
-    // this.pagesWatcher.on('addDir', target => this.handleUpdate('addDir', target))
-    // this.pagesWatcher.on('unlinkDir', target => this.handleUpdate('unlinkDir', target))
+    this.addWatcherListener(this.pagesWatcher, CHANGE_FROM.SOURCE)
+    this.addWatcherListener(this.staticFilesWatcher, CHANGE_FROM.SOURCE_STATIC)
   }
 
   watchThemeFiles() {
@@ -60,7 +43,7 @@ class DevProcess extends EventEmiiter {
     } = this.context
 
     this.themeStaticFilesWatcher = chokidar.watch(
-      ['static/**/*.js', 'static/**/*.css'],
+      ['static/**/!(_)*.*', '!.DS_Store'],
       {
         cwd: themePath,
         ignored: ['node_modules'],
@@ -68,7 +51,7 @@ class DevProcess extends EventEmiiter {
       }
     )
 
-    this.themeWatcher = chokidar.watch(['config.yml', 'layout/**/*.njk'], {
+    this.themeWatcher = chokidar.watch(['config.yml', 'layout/**/!(_)*.njk'], {
       cwd: themePath,
       ignored: ['node_modules'],
       ignoreInitial: true
@@ -76,25 +59,15 @@ class DevProcess extends EventEmiiter {
 
     logger.debug('watchThemeFiles')
 
-    this.themeStaticFilesWatcher.on('change', target =>
-      this.handleUpdate('change', target, CHANGE_FROM.THEME_STATIC)
-    )
-    this.themeStaticFilesWatcher.on('add', target =>
-      this.handleUpdate('add', target, CHANGE_FROM.THEME_STATIC)
-    )
-    this.themeStaticFilesWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, CHANGE_FROM.THEME_STATIC)
-    )
+    // eslint-disable-next-line
+    this.addWatcherListener(this.themeStaticFilesWatcher, CHANGE_FROM.THEME_STATIC)
+    this.addWatcherListener(this.themeWatcher, CHANGE_FROM.THEME)
+  }
 
-    this.themeWatcher.on('change', target =>
-      this.handleUpdate('change', target, CHANGE_FROM.THEME)
-    )
-    this.themeWatcher.on('add', target =>
-      this.handleUpdate('add', target, CHANGE_FROM.THEME)
-    )
-    this.themeWatcher.on('unlink', target =>
-      this.handleUpdate('unlink', target, CHANGE_FROM.THEME)
-    )
+  addWatcherListener(watcher, from) {
+    watcher.on('change', target => this.handleUpdate('change', target, from))
+    watcher.on('add', target => this.handleUpdate('add', target, from))
+    watcher.on('unlink', target => this.handleUpdate('unlink', target, from))
   }
 
   handleUpdate(type, target, from) {
@@ -112,7 +85,7 @@ class DevProcess extends EventEmiiter {
         case 'change':
         case 'add':
           // 获取变动的md文件路径
-          const filePath = path.join(this.context.sourceDir, target)
+          const filePath = path.join(this.context.pageDir, target)
           logger.debug('文件被修改或添加', filePath, 'target: ', target)
           // 重新生成
           const newPage = await this.context.addPage({
@@ -137,8 +110,9 @@ class DevProcess extends EventEmiiter {
           return
       }
     } else if (from === CHANGE_FROM.THEME) {
-      // 主题模板改变时，重新编译
+      // 主题模板改变时，重新编译生成
       await this.context.process()
+      await this.context.generate()
       this.refresh()
     } else if (from === CHANGE_FROM.THEME_STATIC) {
       // 主题静态资源改变时，更新静态文件到temp目录

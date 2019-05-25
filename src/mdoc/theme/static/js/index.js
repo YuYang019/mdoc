@@ -1,1 +1,1 @@
-console.log('load source')
+console.log('load js source from theme')

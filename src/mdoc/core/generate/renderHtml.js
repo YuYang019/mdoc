@@ -42,7 +42,7 @@ function renderPage() {
       env = injectTemplateHelper(env)
     }
 
-    logger.debug(ctx.path, 'theme config: ', themeConfig)
+    logger.debug('theme config: ', themeConfig)
 
     return env.renderString(pageTemplate, {
       content,

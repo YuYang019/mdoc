@@ -3,12 +3,13 @@ const path = require('path')
 const chalk = require('chalk')
 const globby = require('globby')
 const { renderPage, renderIndex } = require('./renderHtml')
-const injectDevcode = require('./injectDevcode')
+const { injectDevcode } = require('./injectDevcode')
 const logger = require('../../utils/logger')
 
 module.exports = class GenerateProcess {
   constructor(ctx) {
     this.context = ctx
+    this.isProd = ctx.isProd
   }
 
   async generate() {

@@ -14,8 +14,19 @@ class DevProcess extends EventEmiiter {
   }
 
   async process() {
+    this.watchSiteConfig()
     this.watchSourceFiles()
     this.watchThemeFiles()
+  }
+
+  watchSiteConfig() {
+    this.configWatcher = chokidar.watch(['config.yml'], {
+      cwd: this.context.docDir,
+      ignored: ['node_modules'],
+      ignoreInitial: true
+    })
+
+    this.addWatcherListener(this.configWatcher, CHANGE_FROM.SITE_CONFIG)
   }
 
   watchSourceFiles() {
@@ -109,8 +120,8 @@ class DevProcess extends EventEmiiter {
         default:
           return
       }
-    } else if (from === CHANGE_FROM.THEME) {
-      // 主题模板改变时，重新编译生成
+    } else if (from === CHANGE_FROM.THEME || from === CHANGE_FROM.SITE_CONFIG) {
+      // 当站点配置或者主题模板改变时，重新编译生成
       await this.context.process()
       await this.context.generate()
       this.refresh()

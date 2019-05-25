@@ -6,12 +6,14 @@ function createApp(options) {
 
 async function build(options) {
   const app = createApp(options)
+  app.isProd = true
   await app.process()
   return app.build()
 }
 
 async function dev(options) {
   const app = createApp(options)
+  app.isProd = false
   await app.process()
   return app.dev()
 }

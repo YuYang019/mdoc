@@ -22,7 +22,6 @@ module.exports = class BuildProcess {
   async runGulp() {
     const gulpFilePath = await generateGulpFile(this.context)
     return new Promise(resolve => {
-      console.log(this.context.appPath)
       const child = spawn('npm', ['run', 'gulp:build', gulpFilePath], {
         cwd: this.context.appPath
       })

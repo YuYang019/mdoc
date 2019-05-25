@@ -3,8 +3,6 @@ social:
 
 author: emmm
 
-highlight: true
-
 powerd:
   name: mdoc
   github: https://github.com/maoyuyang/mdoc
@@ -17,6 +15,7 @@ stylesheets:
   - /static/css/index.css
   - /static/css/normalize.css
   - /static/icon/iconfont.css
+  - /static/css/prism-tomorrow.css
 
 scripts:
   - /static/js/index.js

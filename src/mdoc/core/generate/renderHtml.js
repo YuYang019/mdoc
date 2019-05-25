@@ -1,4 +1,5 @@
 const nunjucks = require('nunjucks')
+const path = require('path')
 const logger = require('../../utils/logger')
 
 // 渲染首页布局
@@ -15,7 +16,7 @@ function renderIndex() {
       logger.debug('缓存nunjuck env')
       // 设置主题模板所在路径
       env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
-      env = injectTemplateHelper(env)
+      env = injectTemplateHelper(env, ctx)
     }
 
     return env.renderString(indexTemplate, {
@@ -39,7 +40,7 @@ function renderPage() {
     if (!env) {
       logger.debug('缓存nunjuck env')
       env = nunjucks.configure(layoutPath, { autoescape: false, noCache: true })
-      env = injectTemplateHelper(env)
+      env = injectTemplateHelper(env, ctx)
     }
 
     logger.debug('theme config: ', themeConfig)
@@ -52,15 +53,20 @@ function renderPage() {
   }
 }
 
-function injectTemplateHelper(env) {
+function injectTemplateHelper(env, ctx) {
+  const base = ctx.siteConfig.base
+  const isProd = ctx.isProd
+
   env.addGlobal('css', stylesheets => {
+    const urlFor = env.getGlobal('url_for')
     let result = ''
+
     if (Array.isArray(stylesheets)) {
       stylesheets.forEach(stylesheet => {
-        result += `<link rel="stylesheet" href=${stylesheet}></link>`
+        result += `<link rel="stylesheet" href=${urlFor(stylesheet)}></link>`
       })
     } else if (typeof stylesheets === 'string') {
-      result = `<link rel="stylesheet" href=${stylesheets}></link>`
+      result = `<link rel="stylesheet" href=${urlFor(stylesheets)}></link>`
     } else {
       result = ''
     }
@@ -68,17 +74,28 @@ function injectTemplateHelper(env) {
   })
 
   env.addGlobal('js', scripts => {
+    const urlFor = env.getGlobal('url_for')
     let result = ''
+
     if (Array.isArray(scripts)) {
       scripts.forEach(script => {
-        result += `<script src=${script}></script>`
+        result += `<script src=${urlFor(script)}></script>`
       })
     } else if (typeof scripts === 'string') {
-      result = `<script src=${scripts}></link>`
+      result = `<script src=${urlFor(scripts)}></link>`
     } else {
       result = ''
     }
     return result
+  })
+
+  // 这是个很偷懒的方法，模板直接调用这个方法，就能修正链接
+  env.addGlobal('url_for', url => {
+    if (isProd && base) {
+      return path.join(base, url)
+    } else {
+      return url
+    }
   })
 
   return env

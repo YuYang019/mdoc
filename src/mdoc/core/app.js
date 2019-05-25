@@ -8,7 +8,10 @@ const GenerateProcess = require('./generate')
 const createTemp = require('./createTemp')
 const createMarkdown = require('./createMarkdown')
 const logger = require('../utils/logger')
+const parseConfig = require('../utils/parseConfig')
 const loadTheme = require('./loadTheme')
+
+const fixBaseLinkCreator = require('../markdown/lib/fixBaseLink')
 
 const Page = require('./Page')
 
@@ -43,9 +46,17 @@ class App {
   }
 
   async process() {
+    this.siteConfig = await this.resolveConfig()
+    logger.debug('siteConfig', this.siteConfig)
+
     this.theme = await loadTheme(this)
 
     await this.resolvePage()
+  }
+
+  async resolveConfig() {
+    const configPath = path.resolve(this.docDir, 'config.yml')
+    return parseConfig(configPath)
   }
 
   async resolvePage() {
@@ -55,6 +66,11 @@ class App {
       cwd: this.pageDir
     })
     logger.debug('pageFile', pageFile)
+
+    // 如果是生产模式，且设置了base，需要注册md插件来处理base
+    if (this.isProd && this.siteConfig.base) {
+      this.markdown.use(fixBaseLinkCreator(this))
+    }
 
     // all并行解析添加
     await Promise.all(
@@ -86,7 +102,6 @@ class App {
   }
 
   async dev() {
-    this.isProd = false
     this.devProcess = new DevProcess(this)
     await this.devProcess.process()
     await this.generate()
@@ -110,7 +125,6 @@ class App {
   }
 
   async build() {
-    this.isProd = true
     this.buildProcess = new BuildProcess(this)
     await this.buildProcess.process()
   }

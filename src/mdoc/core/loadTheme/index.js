@@ -1,9 +1,9 @@
 const fs = require('fs-extra')
 const path = require('path')
-const yamlParser = require('js-yaml')
 const logger = require('../../utils/logger')
+const parseConfig = require('../../utils/parseConfig')
 
-async function loadTheme() {
+async function loadTheme(ctx) {
   const themePath = path.resolve(__dirname, '../../theme')
   const layoutPath = path.resolve(__dirname, '../../theme/layout')
   const pagePath = path.resolve(__dirname, '../../theme/layout/page.njk')
@@ -16,7 +16,7 @@ async function loadTheme() {
   logger.debug('layout文件夹所在路径：', layoutPath)
   logger.debug('static文件夹所在路径：', sourcePath)
 
-  const themeConfig = loadThemeConfig()
+  const themeConfig = loadThemeConfig(ctx)
 
   return {
     themePath,
@@ -30,8 +30,12 @@ async function loadTheme() {
   }
 }
 
-function loadThemeConfig() {
+function loadThemeConfig(ctx) {
   const configPath = path.resolve(__dirname, '../../theme/config.yml')
+  const isProd = ctx.isProd
+  const siteConfig = ctx.siteConfig
+
+  logger.debug('load theme, prod', isProd, siteConfig)
 
   let themeConfig = {}
   if (fs.existsSync(configPath)) {
@@ -39,14 +43,6 @@ function loadThemeConfig() {
   }
 
   return themeConfig
-}
-
-function parseConfig(configPath) {
-  const content = fs.readFileSync(configPath, 'utf-8')
-
-  const data = yamlParser.safeLoad(content)
-
-  return data || {}
 }
 
 module.exports = loadTheme

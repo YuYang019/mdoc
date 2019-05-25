@@ -5,7 +5,7 @@
     <div id="left">
       <div class="overlay"></div>
       <div class="intro">
-        <a class="avatar" href="/">
+        <a class="avatar" href={{ url_for('/') }}>
           <img src={{ theme.avatar }} alt="avatar">
         </a>
         <p class="name">
@@ -15,16 +15,16 @@
         <nav class="menu">
           <ul>
             <li>
-              <a href="/">主页</a>
+              <a href={{ url_for('/') }}>主页</a>
             </li>
             <li>
-              <a href="/">相册</a>
+              <a href={{ url_for('/') }}>相册</a>
             </li>
           </ul>
         </nav>
         <nav class="sub-menu">
-          <a href="/">所有文章 / </a>
-          <a href="/">关于我</a>
+          <a href={{ url_for('/') }}>所有文章 / </a>
+          <a href={{ url_for('/') }}>关于我</a>
         </nav>
         <nav class="social">
           <a class="github" href={{ theme.social.github }} target="_blank"><i class="anticon icon-github"></i></a>

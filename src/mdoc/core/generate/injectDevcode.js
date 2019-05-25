@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 
-module.exports = function injectDevcode(html) {
+function injectDevcode(html) {
   const $ = cheerio.load(html)
 
   $('head').append('<script src="/socket.io/socket.io.js"></script>')
@@ -10,3 +10,5 @@ module.exports = function injectDevcode(html) {
 
   return $.html()
 }
+
+module.exports = { injectDevcode }

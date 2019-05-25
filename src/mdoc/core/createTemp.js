@@ -32,9 +32,15 @@ function createTemp(ctx) {
     return destPath
   }
 
+  async function removeTemp() {
+    await fs.remove(tempPath)
+    logger.debug('删除.temp目录')
+  }
+
   return {
     tempPath,
-    writeTemp
+    writeTemp,
+    removeTemp
   }
 }
 

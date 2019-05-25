@@ -17,6 +17,12 @@ module.exports = class GenerateProcess {
     await this.generateThemeAssets()
   }
 
+  async generateDist() {
+    const { outDir, tempPath } = this.context
+    logger.debug('拷贝.temp目录文件到dist文件夹')
+    await fs.copy(tempPath, outDir)
+  }
+
   async generatePages() {
     const pages = this.context.pages
 
@@ -67,9 +73,21 @@ module.exports = class GenerateProcess {
     const patterns = ['**/!(_)*.*']
     // 防止拷贝带下划线的文件夹，仅考虑第一层
     const dirs = await fs.readdir(sourceDir)
+    const copiedDirs = []
     for (let i = 0; i < dirs.length; i++) {
       if (/^_\w+/.test(dirs[i])) {
+        if (dirs[i] !== '_posts') {
+          logger.warn(
+            '[mdoc]:',
+            `${chalk.cyan('source')} 目录下的 ${chalk.red(
+              dirs[i]
+            )} 文件夹将被忽略`
+          )
+        }
         patterns.push('!' + dirs[i])
+      } else {
+        // 记录被拷贝的文件夹
+        copiedDirs.push(dirs[i])
       }
     }
 
@@ -77,7 +95,16 @@ module.exports = class GenerateProcess {
       cwd: sourceDir
     })
 
-    logger.debug(tempPath, assets)
+    logger.debug('拷贝source静态资源到.temp', assets)
+
+    // 复制的时候，先清空.temp里之前被复制的文件
+    copiedDirs.forEach(dir => {
+      const existsPath = path.resolve(tempPath, dir)
+      if (fs.existsSync(existsPath)) {
+        logger.debug(`清空temp目录下的 ${chalk.red(dir)} 文件夹`)
+        fs.emptyDirSync(existsPath)
+      }
+    })
 
     await Promise.all(
       assets.map(async file => {

@@ -1,17 +1,14 @@
 const globby = require('globby')
 const chalk = require('chalk')
 const path = require('path')
-const fs = require('fs-extra')
 
-// const BuildProcess = require('./build')
+const BuildProcess = require('./build')
 const DevProcess = require('./dev')
 const GenerateProcess = require('./generate')
 const createTemp = require('./createTemp')
 const createMarkdown = require('./createMarkdown')
 const logger = require('../utils/logger')
 const loadTheme = require('./loadTheme')
-const fileToPath = require('../utils/fileToPath')
-const CHANGE_FROM = require('./dev/constants')
 
 const Page = require('./Page')
 
@@ -32,55 +29,23 @@ class App {
     this.sourceDir = path.resolve(this.docDir, './source')
     logger.debug('source文件夹所在目录', this.pageDir)
 
-    const { tempPath, writeTemp } = createTemp(this)
+    const { tempPath, writeTemp, removeTemp } = createTemp(this)
     this.tempPath = tempPath
     this.writeTemp = writeTemp
+    this.removeTemp = removeTemp
     logger.debug('tempPath:', this.tempPath)
 
     this.markdown = createMarkdown(this)
   }
 
   async process() {
+    this._startTime = new Date().getTime()
+
     this.theme = await loadTheme(this)
 
     await this.resolvePage()
 
     await this.generate()
-  }
-
-  async handleFileChange({ type, target, from }) {
-    if (from === CHANGE_FROM.SOURCE) {
-      switch (type) {
-        case 'change':
-        case 'add':
-          // 获取变动的md文件路径
-          const filePath = path.join(this.sourceDir, target)
-          logger.debug('文件被修改或添加', filePath, 'target: ', target)
-          // 重新生成
-          const newPage = await this.addPage({ filePath, relative: target })
-          await this.generateProcess.generatePage(newPage)
-          // 刷新
-          this.devProcess.refresh()
-          break
-        case 'unlink':
-          // 获取已生成的html文件
-          const distHtmlPath = path.join(this.tempPath, fileToPath(target))
-          logger.debug('文件被删除', distHtmlPath, 'target: ', target)
-          // 删除
-          await fs.remove(distHtmlPath)
-          break
-        default:
-          return
-      }
-    } else if (from === CHANGE_FROM.THEME) {
-      // 主题模板改变时，重新编译
-      await this.process()
-      this.devProcess.refresh()
-    } else if (from === CHANGE_FROM.THEME_STATIC) {
-      // 主题静态资源改变时，更新静态文件到temp目录
-      await this.generateProcess.generateThemeAssets()
-      this.devProcess.refresh()
-    }
   }
 
   async resolvePage() {
@@ -135,7 +100,7 @@ class App {
               path.relative(this.docDir, target)
             )}`
           )
-          this.handleFileChange({ type, target, from })
+          this.devProcess.handleFileChange({ type, target, from })
         })
     } catch (err) {
       throw err
@@ -144,8 +109,10 @@ class App {
     return this
   }
 
-  build() {
+  async build() {
     this.isProd = true
+    this.buildProcess = new BuildProcess(this)
+    await this.buildProcess.process()
   }
 }
 

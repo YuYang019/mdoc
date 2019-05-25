@@ -32,10 +32,6 @@ async function loadTheme(ctx) {
 
 function loadThemeConfig(ctx) {
   const configPath = path.resolve(__dirname, '../../theme/config.yml')
-  const isProd = ctx.isProd
-  const siteConfig = ctx.siteConfig
-
-  logger.debug('load theme, prod', isProd, siteConfig)
 
   let themeConfig = {}
   if (fs.existsSync(configPath)) {

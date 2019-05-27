@@ -6,10 +6,11 @@ const logger = require('../../utils/logger')
 function renderIndex() {
   let env = null
 
-  return (content, ctx) => {
+  return ctx => {
     const {
       theme: { indexTemplate, layoutPath, themeConfig },
-      isProd
+      isProd,
+      pages
     } = ctx
 
     if (!env) {
@@ -20,9 +21,9 @@ function renderIndex() {
     }
 
     return env.renderString(indexTemplate, {
-      content,
       isDev: !isProd,
-      theme: themeConfig
+      theme: themeConfig,
+      page: { total: pages.length, posts: pages }
     })
   }
 }
@@ -31,11 +32,12 @@ function renderIndex() {
 function renderPage() {
   let env = null
 
-  return (content, ctx) => {
+  return (page, ctx) => {
     const {
       theme: { pageTemplate, layoutPath, themeConfig },
       isProd
     } = ctx
+    const { html, title } = page
 
     if (!env) {
       logger.debug('缓存nunjuck env')
@@ -46,9 +48,9 @@ function renderPage() {
     logger.debug('theme config: ', themeConfig)
 
     return env.renderString(pageTemplate, {
-      content,
       isDev: !isProd,
-      theme: themeConfig
+      theme: themeConfig,
+      page: { title, content: html }
     })
   }
 }

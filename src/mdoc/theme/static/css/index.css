@@ -6,6 +6,10 @@ a {
   text-decoration: none;
 }
 
+body {
+  font-family: lucida grande,lucida sans unicode,lucida,helvetica,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+}
+
 #container, body, html {
   min-height: 100%;
   overflow-x: hidden;
@@ -160,18 +164,132 @@ a {
 }
 
 #container #right #wrapper {
-  background: #fff;
-  border: 1px solid #ddd;
   margin-bottom: 80px
 }
 
-#container #right #wrapper #content {
-  padding: 25px;
+#container #right #wrapper #content .article {
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
 }
-
 
 #container #right #wrapper #content .article h1:first-child {
   margin-top: 0;
+}
+
+#content .article .article-head {
+  border-left: 5px solid #4d4d4d;
+  padding: 30px 0 15px 7.6%;
+}
+
+#content .article .article-head h1 {
+  margin-bottom: 0;
+}
+
+#content .article .article-excerpt, #content .article .article-inner {
+  padding-left: 7.6%;
+  padding-right: 7.6%;
+}
+
+#content .article .article-excerpt .article-more-a {
+  color: #08c;
+}
+
+#content .article .article-excerpt p, #content .article .article-inner p{
+  margin-bottom: 1.75em;
+  color: #333;
+}
+
+#container #content .article img {
+  max-width: 100%;
+}
+
+#container #content .article .article-more {
+  margin: 30px 7.6% 0;
+  border-top: 1px solid #ddd
+}
+
+#container #content .article .article-more .tag-lists {
+  display: flex;
+  float: left;
+  margin: 25px 0;
+}
+
+#container #content .article .article-more .tag-lists ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+#container #content .article .article-more .tag-lists i {
+  color: #999;
+}
+
+#container #content .article .article-more .tag-lists ul li {
+  list-style: none;
+  margin-left: 18px;
+  background: #ba8f6c;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 0 5px 5px 0;
+}
+
+#container #content .article .article-more .tag-lists ul li a {
+  display: inline-block;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 5px;
+  position: relative;
+}
+
+#container #content .article .article-more .tag-lists ul li a:before {
+  content: " ";
+  width: 0;
+  height: 0;
+  border: 9px solid transparent;
+  border-right-color: #ba8f6c;
+  position: absolute;
+  top: 0;
+  left: -18px;
+}
+
+#container #content .article .article-more:after {
+  content: " ";
+  display: block;;
+  line-height: 0;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+
+#container #content .article .article-more .expand {
+  display: inline-block;
+  border-radius: 3px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  float: right;
+  text-decoration: none;
+  padding: 6px 8px;
+  background: #4d4d4d;
+  color: #fff;
+  font-size: 12px;
+}
+
+#container #content .article h1 {
+  color: #696969;
+  font-weight: 300;
+  font-size: 26px;
+}
+
+#content .article h2,
+#content .article h3,
+#content .article h4,
+#content .article h5,
+#content .article h6 {
+  font-weight: 700;
+  color: #574c4c;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
 }
 
 #container #right #footer {

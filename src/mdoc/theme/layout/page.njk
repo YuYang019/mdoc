@@ -1,7 +1,24 @@
 {% extends "includes/layout.njk" %}
 
 {% block content %}
-  <div class="article">
-    {{ content }}
-  </div>
+  <article class="article">
+    <div class="article-head">
+      <h1>{{ page.title }}</h1>
+    </div>
+    <div class="article-inner">
+      {{ page.content }}
+    </div>
+    <div class="article-more clearfix">
+      <div class="tag-lists">
+        <i class="anticon icon-tag"></i>
+        <ul>
+          <li><a>test</a></li>
+          <li><a>haha</a></li>
+        </ul>
+      </div>
+    </div>
+    {# <div class="article-more clearfix">
+      <a href={{ url_for(post.path) }}>展开全文 >></a>
+    </div> #}
+  </article>
 {% endblock %}

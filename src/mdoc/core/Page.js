@@ -30,9 +30,16 @@ class Page {
       this.html = markdown.render(this._strippedContent)
       Object.assign(this.frontmatter, data)
 
+      const { title } = this.frontmatter
+      // 抽取出一些常用的属性
+      if (title) {
+        this.title = title
+      }
+
       // 内容摘抄
       if (excerpt) {
-        this.excerpt = excerpt
+        // 解析后的html
+        this.excerpt = markdown.render(excerpt)
       }
 
       logger.debug('frontmatter: ', this.frontmatter)

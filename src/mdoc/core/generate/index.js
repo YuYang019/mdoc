@@ -13,9 +13,12 @@ module.exports = class GenerateProcess {
   }
 
   async generate() {
-    await this.generatePages()
-    await this.generateSourceAssets()
-    await this.generateThemeAssets()
+    await Promise.all([
+      this.generateIndex(),
+      this.generatePages(),
+      this.generateSourceAssets(),
+      this.generateThemeAssets()
+    ])
   }
 
   async generateDist() {
@@ -35,18 +38,25 @@ module.exports = class GenerateProcess {
     )
   }
 
+  // 生成首页
+  async generateIndex() {
+    const { writeTemp } = this.context
+    let html = renderIndex(this.context)
+
+    if (!this.context.isProd) {
+      logger.debug('inject dev code')
+      html = injectDevcode(html)
+    }
+
+    await writeTemp('index.html', html)
+  }
+
   async generatePage(page) {
-    const writeTemp = this.context.writeTemp
-    const pageHtml = page.html
+    const { writeTemp } = this.context
     const pageRelativePath = page.path
-    const frontmatter = page.frontmatter
     let html
 
-    if (frontmatter.home) {
-      html = renderIndex(pageHtml, this.context)
-    } else {
-      html = renderPage(pageHtml, this.context)
-    }
+    html = renderPage(page, this.context)
 
     if (!this.context.isProd) {
       logger.debug('inject dev code')

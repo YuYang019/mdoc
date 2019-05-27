@@ -103,7 +103,11 @@ class DevProcess extends EventEmiiter {
             filePath,
             relative: target
           })
-          await this.context.generateProcess.generatePage(newPage)
+          // 重新生成首页和该页面
+          await Promise.all([
+            this.context.generateProcess.generateIndex(),
+            this.context.generateProcess.generatePage(newPage)
+          ])
           // 刷新
           this.refresh()
           break

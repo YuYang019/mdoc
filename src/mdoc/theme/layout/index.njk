@@ -1,7 +1,30 @@
 {% extends "includes/layout.njk" %}
 
 {% block content %}
-  <div class="lists">
-    {{ content }}
+  <div class="article-lists">
+    {% for post in page.posts %}
+      <article class="article">
+        <div class="article-head">
+          <h1>{{ post.title }}</h1>
+        </div>
+        <div class="article-excerpt">
+          {{ post.excerpt }}
+          <a class="article-more-a" href={{ url_for(post.path) }}>more >></a>
+        </div>
+        <div class="article-more clearfix">
+          <div class="tag-lists">
+            <i class="anticon icon-tag"></i>
+            <ul>
+              <li><a>test</a></li>
+              <li><a>haha</a></li>
+            </ul>
+          </div>
+          <a class="expand" href={{ url_for(post.path) }}>展开全文 >></a>
+        </div>
+      </article>
+    {% endfor %}
   </div>
+  {# <div class="lists">
+    {{ content }}
+  </div> #}
 {% endblock %}

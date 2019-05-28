@@ -23,6 +23,9 @@ module.exports = class GenerateProcess {
 
   async generateDist() {
     const { outDir, tempPath } = this.context
+    if (fs.existsSync(outDir)) {
+      fs.removeSync(outDir)
+    }
     logger.debug('拷贝.temp目录文件到dist文件夹')
     await fs.copy(tempPath, outDir)
   }
@@ -130,13 +133,74 @@ module.exports = class GenerateProcess {
 
   async generateThemeAssets() {
     const {
-      theme: { sourcePath },
-      tempPath
+      theme: { staticPath },
+      tempPath,
+      renderer
     } = this.context
 
-    // 拷贝时包含父文件夹, 静态资源默认放static
-    await fs.copy(sourcePath, path.join(tempPath, 'static'))
+    // 匹配不以_开头的文件
+    const patterns = ['**/!(_)*.*', '!.DS_Store']
+    // 防止拷贝带下划线的文件夹，仅考虑第一层
+    const dirs = await fs.readdir(staticPath)
+    for (let i = 0; i < dirs.length; i++) {
+      if (/^_\w+/.test(dirs[i])) {
+        logger.warn(
+          '[mdoc]:',
+          `${chalk.cyan('theme/static')} 目录下的 ${chalk.red(
+            dirs[i]
+          )} 文件夹将被忽略`
+        )
+        patterns.push('!' + dirs[i])
+      }
+    }
 
-    logger.debug('拷贝主题静态文件到temp目录')
+    const assets = await globby(patterns, {
+      cwd: staticPath
+    })
+
+    logger.debug('拷贝theme/static静态资源到.temp', assets)
+
+    // 复制的时候，先清空.temp里的static文件夹
+    const existsPath = path.resolve(tempPath, 'static')
+    if (fs.existsSync(existsPath)) {
+      logger.debug(`清空temp目录下的 ${chalk.red('static')} 文件夹`)
+      fs.removeSync(existsPath)
+    }
+
+    const { renderers } = renderer
+    const suffixs = Object.keys(renderers)
+
+    await Promise.all(
+      assets.map(async file => {
+        // 文件后缀，不包含.
+        const fileSuffix = /\.(\w+)$/.exec(file)[1]
+
+        if (suffixs.indexOf(fileSuffix) !== -1) {
+          logger.debug('发现可用renderer渲染的文件', file)
+
+          const fileRenderer = renderers[fileSuffix]
+          const { to, renderer } = fileRenderer
+          const fileName = file.replace(/\.\w+$/, `.${to}`)
+          const fileContent = await fs.readFile(
+            path.resolve(staticPath, file),
+            'utf-8'
+          )
+
+          renderer.render(fileContent, async (err, res) => {
+            if (err) throw err
+            const outPath = path.join(path.join(tempPath, 'static'), fileName)
+            const outFolder = path.parse(outPath).dir
+            logger.debug('renderer渲染后文件', outPath, outFolder)
+            await fs.ensureDir(outFolder)
+            await fs.writeFile(outPath, res)
+          })
+        } else {
+          await fs.copy(
+            path.resolve(staticPath, file),
+            path.resolve(tempPath, 'static', file)
+          )
+        }
+      })
+    )
   }
 }

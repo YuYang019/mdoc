@@ -10,6 +10,7 @@ const createMarkdown = require('./createMarkdown')
 const logger = require('../utils/logger')
 const parseConfig = require('../utils/parseConfig')
 const loadTheme = require('./loadTheme')
+const Renderer = require('./renderer')
 
 const fixBaseLinkCreator = require('../markdown/lib/fixBaseLink')
 
@@ -37,6 +38,8 @@ class App {
     this.writeTemp = writeTemp
     this.removeTemp = removeTemp
     logger.debug('tempPath:', this.tempPath)
+
+    this.renderer = new Renderer(this)
 
     this.appPath = path.resolve(__dirname, '../../../')
 

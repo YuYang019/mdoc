@@ -1,0 +1,218 @@
+*
+  box-sizing: border-box
+
+a
+  text-decoration: none
+
+body
+  font-family: lucida grande,lucida sans unicode,lucida,helvetica,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif
+
+::-webkit-scrollbar
+  width: 8px
+  background-color: transparent
+
+
+::-webkit-scrollbar-thumb 
+  border-radius: 12px
+  background-color: rgba(0, 0, 0, 0.2)
+  max-height: 50px
+
+
+::-webkit-scrollbar-track
+  background-color: #eaeaea
+
+#container, body, html 
+  min-height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+
+#container
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  #left
+    width: 300px
+    position: fixed
+    top: 0
+    left: 0
+    height: 100%
+    background: #fff
+    z-index: 999
+    .overlay
+      height: 180px
+      width: 100%
+      background: #4d4d4d
+    .intro
+      width: 76%
+      text-align: center
+      margin: -64px auto 0
+      .avatar
+        margin: 0 auto
+        display: block
+        width: 128px
+        height: 128px
+        border: 5px solid #fff
+        border-radius: 50%
+        overflow: hidden
+        img 
+          max-width: 100%
+      .name
+        margin: 32px 0
+        a
+          font-family: Roboto,serif
+          font-size: 30px
+          text-decoration: none
+          color: #696969
+          transition: all .3s ease
+          &:hover
+            opacity: .6
+      .signature
+        font-size: 14px
+        line-height: 25px
+        color: #999
+      .menu
+        ul
+          padding: 0
+          margin: 45px 0
+          li
+            font-size: 14px
+            list-style: none
+            margin: 15px 0
+            a
+              text-decoration: none
+              color: #696969
+              transition: all .3s ease
+              &:hover
+                opacity: .6
+      .sub-menu
+        margin-bottom: 30px
+        a
+          font-size: 12px
+          color: #696969
+          transition: all .3s ease
+          &:hover
+            opacity: .6
+      .social
+        .anticon
+          font-size: 26px
+        .github
+          color: #AFB6CA
+          transition: all .3s ease
+          cursor: pointer
+          &:hover
+            color: #696969
+
+#container
+  #right
+    position: absolute
+    left: 300px
+    top: 0
+    right: 0
+    width: auto
+    min-height: 100%;
+    background: #eaeaea
+    padding: 30px
+    font-size: 16px
+    #wrapper
+      margin-bottom: 80px
+      #content
+        code
+          font-size: 14px
+        .article
+          background: #fff
+          border: 1px solid #ddd
+          margin-bottom: 15px
+          img 
+            max-width: 100%
+          h1
+            color: #696969
+            font-weight: 300
+            font-size: 26px
+            &:first-child
+              margin-top: 0
+          h2,h3,h4,h5,h6
+            font-weight: 700
+            color: #574c4c
+            padding-bottom: 5px
+            border-bottom: 1px solid #ddd
+          .article-head
+            border-left: 5px solid #4d4d4d
+            padding: 30px 0 15px 7.6%
+            h1
+              margin-bottom: 0
+          .article-excerpt,.article-inner
+            padding-left: 7.6%
+            padding-right: 7.6%
+            p
+              margin-bottom: 1.75em
+              color: #333
+          .article-excerpt
+            .article-more-a
+              color: #08c
+              display: block
+              margin-top: 1.7em
+          .article-more
+            margin: 30px 7.6% 0
+            border-top: 1px solid #ddd
+            &:after
+              content: " "
+              display: block;
+              line-height: 0
+              height: 0
+              visibility: hidden
+              clear: both
+            .expand
+              display: inline-block
+              border-radius: 3px
+              margin-top: 25px
+              margin-bottom: 25px
+              float: right
+              text-decoration: none
+              padding: 6px 8px
+              background: #4d4d4d
+              color: #fff
+              font-size: 12px
+            .tag-lists
+              display: flex
+              float: left
+              margin: 25px 0
+              i
+                color: #999
+              ul
+                margin: 0
+                padding: 0
+                display: flex
+                li
+                  list-style: none
+                  margin-left: 18px
+                  background: #ba8f6c
+                  color: #fff
+                  font-size: 12px
+                  border-radius: 0 5px 5px 0
+                  a
+                    display: inline-block
+                    height: 18px
+                    line-height: 18px
+                    padding: 0 5px
+                    position: relative
+                    &:before
+                      content: " "
+                      width: 0
+                      height: 0
+                      border: 9px solid transparent
+                      border-right-color: #ba8f6c
+                      position: absolute
+                      top: 0
+                      left: -18px
+    #footer
+      position: absolute
+      left: 0
+      width: 100%
+      bottom: 30px
+      font-family: Menlo,Monaco,Andale Mono,lucida console,Courier New,monospace
+      text-shadow: 0 1px #fff
+      font-size: 12px
+      opacity: .6
+      text-align: center

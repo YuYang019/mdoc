@@ -27,7 +27,9 @@ class Page {
       // 提取头部配置后剩余的content
       this._strippedContent = content
       // 渲染的html
-      this.html = markdown.render(this._strippedContent)
+      this.html = markdown
+        .render(this._strippedContent)
+        .replace(/<p>&lt;!-- more --&gt;<\/p>/, '')
       Object.assign(this.frontmatter, data)
 
       const { title } = this.frontmatter

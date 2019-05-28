@@ -8,13 +8,13 @@ async function loadTheme(ctx) {
   const layoutPath = path.resolve(__dirname, '../../theme/layout')
   const pagePath = path.resolve(__dirname, '../../theme/layout/page.njk')
   const indexPath = path.resolve(__dirname, '../../theme/layout/index.njk')
-  const sourcePath = path.resolve(__dirname, '../../theme/static')
+  const staticPath = path.resolve(__dirname, '../../theme/static')
 
   const pageTemplate = await fs.readFile(pagePath, 'utf-8')
   const indexTemplate = await fs.readFile(indexPath, 'utf-8')
 
   logger.debug('layout文件夹所在路径：', layoutPath)
-  logger.debug('static文件夹所在路径：', sourcePath)
+  logger.debug('static文件夹所在路径：', staticPath)
 
   const themeConfig = loadThemeConfig(ctx)
 
@@ -23,7 +23,7 @@ async function loadTheme(ctx) {
     layoutPath,
     indexTemplate,
     pageTemplate,
-    sourcePath,
+    staticPath,
     indexPath,
     pagePath,
     themeConfig

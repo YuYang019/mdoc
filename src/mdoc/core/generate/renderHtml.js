@@ -93,11 +93,20 @@ function injectTemplateHelper(env, ctx) {
 
   // 这是个很偷懒的方法，模板直接调用这个方法，就能修正链接
   env.addGlobal('url_for', url => {
+    let newUrl
+    // foo/bar -> base/foo/bar
     if (isProd && base) {
-      return path.join(base, url)
+      newUrl = path.join(base, url)
     } else {
-      return url
+      newUrl = url
     }
+
+    // foo/bar.styl -> foo/bar.css
+    if (/\.styl$/.test(url)) {
+      newUrl = url.replace(/\.styl$/, '.css')
+    }
+
+    return newUrl
   })
 
   return env

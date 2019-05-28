@@ -6,10 +6,10 @@
       <div class="overlay"></div>
       <div class="intro">
         <a class="avatar" href={{ url_for('/') }}>
-          <img src={{ theme.avatar }} alt="avatar">
+          <img src={{ url_for(theme.avatar) }} alt="avatar">
         </a>
         <p class="name">
-          <a href="/">{{ theme.author }}</a>
+          <a href={{ url_for('/') }}>{{ theme.author }}</a>
         </p>
         <p class="signature">{{ theme.signature }}</p>
         <nav class="menu">

@@ -12,10 +12,10 @@ avatar: /static/img/avatar.jpeg
 signature: 知易行难啊
 
 stylesheets:
-  - /static/css/index.css
   - /static/css/normalize.css
   - /static/icon/iconfont.css
   - /static/css/prism-tomorrow.css
+  - /static/css/index.styl
 
 scripts:
   - /static/js/index.js

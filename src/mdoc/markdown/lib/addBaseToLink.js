@@ -1,8 +1,8 @@
 const path = require('path')
 
-module.exports = ctx => md => {
+// handle base config
+module.exports = base => md => {
   const linkOpen = md.renderer.rules.link_open
-  const siteConfig = ctx.siteConfig
 
   // 处理a标签
   md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
@@ -12,13 +12,23 @@ module.exports = ctx => md => {
       const link = token.attrs[hrefIndex]
       const href = link[1]
       const isSourceAbsoluteLink = /^\/\w*/.test(href)
+      // expose link for testing
+      const routerLinks = md.$data.links || (md.$data.links = [])
+
       if (isSourceAbsoluteLink) {
         // /static/foo/bar -> /base/static/foo/bar
-        const newHref = path.join(siteConfig.base, href)
+        const newHref = path.join(base, href)
         link[1] = newHref
+        routerLinks.push(newHref)
+        // }
+      } else {
+        routerLinks.push(href)
       }
     }
-    return linkOpen(tokens, idx, options, env, self)
+    if (linkOpen) {
+      return linkOpen(tokens, idx, options, env, self)
+    }
+    return self.renderToken(tokens, idx, options)
   }
 
   // 处理image标签
@@ -29,10 +39,16 @@ module.exports = ctx => md => {
       const link = token.attrs[srcIndex]
       const src = link[1]
       const isSourceAbsoluteSrc = /^\/\w*/.test(src)
+      // expose link for testing
+      const routerLinks = md.$data.links || (md.$data.links = [])
+
       if (isSourceAbsoluteSrc) {
         // /static/foo/bar -> /base/static/foo/bar
-        const newSrc = path.join(siteConfig.base, src)
+        const newSrc = path.join(base, src)
         link[1] = newSrc
+        routerLinks.push(newSrc)
+      } else {
+        routerLinks.push(src)
       }
     }
     return self.renderToken(tokens, idx, options)

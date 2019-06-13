@@ -12,7 +12,7 @@ const parseConfig = require('../utils/parseConfig')
 const loadTheme = require('./loadTheme')
 const Renderer = require('./renderer')
 
-const fixBaseLinkCreator = require('../markdown/lib/fixBaseLink')
+const addBaseToLink = require('../markdown/lib/addBaseToLink')
 
 const Page = require('./Page')
 
@@ -41,6 +41,7 @@ class App {
 
     this.renderer = new Renderer(this)
 
+    // 项目的根路径，即package.json所在路径
     this.appPath = path.resolve(__dirname, '../../../')
 
     this.generateProcess = new GenerateProcess(this)
@@ -72,7 +73,8 @@ class App {
 
     // 如果是生产模式，且设置了base，需要注册md插件来处理base
     if (this.isProd && this.siteConfig.base) {
-      this.markdown.use(fixBaseLinkCreator(this))
+      const plugin = addBaseToLink(this.siteConfig.base)
+      this.markdown.use(plugin)
     }
 
     // all并行解析添加

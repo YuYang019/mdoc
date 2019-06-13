@@ -5,7 +5,7 @@ const parseFrontmatter = require('../utils/parseFrontmatter')
 const logger = require('../utils/logger')
 
 class Page {
-  constructor({ content, filePath, relative, frontmatter = {} }, ctx) {
+  constructor({ content, filePath, relative, frontmatter = {} }, ctx = null) {
     this._filePath = filePath
     this._content = content
     this._context = ctx
@@ -29,7 +29,7 @@ class Page {
       // 渲染的html
       this.html = markdown
         .render(this._strippedContent)
-        .replace(/<p>&lt;!-- more --&gt;<\/p>/, '')
+        .html.replace(/<p>&lt;!-- more --&gt;<\/p>/, '')
       Object.assign(this.frontmatter, data)
 
       const { title } = this.frontmatter
@@ -41,7 +41,7 @@ class Page {
       // 内容摘抄
       if (excerpt) {
         // 解析后的html
-        this.excerpt = markdown.render(excerpt)
+        this.excerpt = markdown.render(excerpt).html
       }
 
       logger.debug('frontmatter: ', this.frontmatter)
